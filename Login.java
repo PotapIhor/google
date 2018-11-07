@@ -10,42 +10,53 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 public class Login {
 
     private static WebDriver driver;
-    private WebElement profileUser;
+    private WebElement element;
 
     @BeforeClass
     public static void setup() {
         System.setProperty("webdriver.chrome.driver", "C:\\DriverChrom\\chromedriver.exe");
         driver = new ChromeDriver();
         driver.manage().window().maximize();
-        driver.manage().timeouts().implicitlyWait(10, TimeUnit.SECONDS);
-        driver.get("http://app.staging.dealdep.com/ru/users/sign_in");
+        driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
+
+
     }
     @Test
-    public void userLogin() {
-        WebElement loginField = driver.findElement(By.id("user_email"));
-        loginField.sendKeys("potapenko.igorr@gmail.com");
-        WebElement passwordField = driver.findElement(By.id("user_password"));
-        passwordField.sendKeys("123456");
-        WebElement loginButton = driver.findElement(By.xpath("//button[text()='Войти']"));
-        loginButton.click();
-        profileUser = driver.findElement(By.xpath("/html/body/div[1]/div[1]/div/nav/a[3]"));
-        profileUser.click();
-        WebElement mailUser = (WebElement) driver.findElements(By.xpath("//*[@id=\"user_email\"]"));
+    public void Find() {
+        driver.get("http://google.com.ua");
+        WebElement search = driver.findElement(By.xpath("//*[@id=\"lst-ib\"]"));
+        search.sendKeys("Nebuchadnezzar");
+        search.submit();
 
-        mailUser.getText();
-        Assert.assertEquals("potapenko.igorr@gmail.com", mailUser);
+        Assert.assertTrue(isPresent());
     }
+
+    public Boolean isPresent(){
+        List <WebElement> allElements = driver.findElements(By.className("iUh30" ));
+        int s = allElements.size();
+        Boolean b = false;
+        if(s>0) {
+            b = true;
+        }
+        return b;
+    }
+
+///переписать на PageObject & Selenide
+
+    // driver.findElement(By.tagName( "https://ru.wikipedia.org/3/"))
+    //       .click();
+    //Assert.assertTrue();
+    //assert?
+
+    //
     @AfterClass
     public static void tearDown() {
-        WebElement menuUser = driver.findElement(By.cssSelector(".login-button__menu-icon"));
-        menuUser.click();
-        WebElement logoutButton = driver.findElement(By.id("login__logout"));
-        logoutButton.click();
         driver.quit();
     }
 }
